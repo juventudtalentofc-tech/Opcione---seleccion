@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portales Galácticos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #0a0e17;
+            background: linear-gradient(to bottom, #0a0e17, #1a1f2e, #0a0e17);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Estrellas animadas */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 5s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(10, 15, 30, 0.8);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 0 50px rgba(0, 150, 255, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(100, 150, 255, 0.2);
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, #0099ff, #00ccff, #0066cc, #0099ff);
+            z-index: -1;
+            border-radius: 25px;
+            animation: borderGlow 4s linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes borderGlow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #00ccff, #0099ff, #0066cc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 15px rgba(0, 150, 255, 0.7);
+            letter-spacing: 2px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            color: #cce7ff;
+            line-height: 1.6;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .portal-btn {
+            flex: 1;
+            min-width: 250px;
+            padding: 25px 30px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 25px rgba(0, 100, 255, 0.4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .portal-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+            z-index: -1;
+        }
+
+        .portal-btn:hover::before {
+            transform: translateX(100%);
+        }
+
+        .portal-btn i {
+            font-size: 2.5rem;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.7));
+        }
+
+        .portal-btn-1 {
+            background: linear-gradient(135deg, #0066cc, #004499);
+            color: white;
+        }
+
+        .portal-btn-2 {
+            background: linear-gradient(135deg, #00aaff, #0077cc);
+            color: white;
+        }
+
+        .portal-btn:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 150, 255, 0.7);
+        }
+
+        .portal-btn:active {
+            transform: translateY(0) scale(1);
+        }
+
+        .fullscreen-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0e17;
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .fullscreen-header {
+            background: rgba(10, 15, 30, 0.95);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(100, 150, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 100, 255, 0.3);
+        }
+
+        .fullscreen-header h2 {
+            color: white;
+            font-size: 1.4rem;
+            text-shadow: 0 0 10px rgba(0, 200, 255, 0.7);
+        }
+
+        .close-btn {
+            background: linear-gradient(135deg, #0066cc, #004499);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(0, 100, 255, 0.4);
+        }
+
+        .close-btn:hover {
+            background: linear-gradient(135deg, #0077dd, #0055aa);
+            box-shadow: 0 0 20px rgba(0, 150, 255, 0.6);
+        }
+
+        .fullscreen-content {
+            flex: 1;
+            width: 100%;
+            height: calc(100% - 60px);
+        }
+
+        .fullscreen-content iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .nebula {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.4;
+            z-index: 0;
+        }
+
+        .nebula-1 {
+            width: 300px;
+            height: 300px;
+            background: #0066cc;
+            top: 10%;
+            left: 10%;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .nebula-2 {
+            width: 400px;
+            height: 400px;
+            background: #00aaff;
+            bottom: 10%;
+            right: 10%;
+            animation: float 18s infinite ease-in-out reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.1); }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .portal-btn {
+                min-width: 100%;
+                padding: 20px;
+            }
+            
+            .buttons-container {
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fondos y efectos -->
+    <div class="stars" id="stars"></div>
+    <div class="nebula nebula-1"></div>
+    <div class="nebula nebula-2"></div>
+    
+    <!-- Contenido principal -->
+    <div class="container">
+        <h1>PORTALES WEB</h1>
+        <p>Accede a la contabilidad de los registros de los cupos</p>
+        
+        <div class="buttons-container">
+            <button class="portal-btn portal-btn-1" id="portal1">
+                <i class="fas fa-user-astronaut"></i>
+                Cupo 1
+            </button>
+            <button class="portal-btn portal-btn-2" id="portal2">
+                <i class="fas fa-users"></i>
+                Cupo 2
+            </button>
+        </div>
+    </div>
+    
+    <!-- Contenedor de pantalla completa -->
+    <div class="fullscreen-container" id="fullscreenContainer">
+        <div class="fullscreen-header">
+            <h2 id="portalTitle">Portal Dimensional</h2>
+            <button class="close-btn" id="closeBtn">Cerrar Portal (ESC)</button>
+        </div>
+        <div class="fullscreen-content">
+            <iframe id="portalFrame" src=""></iframe>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Crear estrellas dinámicas
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 150; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.width = Math.random() * 3 + 'px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 5 + 's';
+                starsContainer.appendChild(star);
+            }
+
+            const portal1Btn = document.getElementById('portal1');
+            const portal2Btn = document.getElementById('portal2');
+            const fullscreenContainer = document.getElementById('fullscreenContainer');
+            const portalFrame = document.getElementById('portalFrame');
+            const portalTitle = document.getElementById('portalTitle');
+            const closeBtn = document.getElementById('closeBtn');
+            
+            // URLs predefinidas en el código
+            const PORTAL1_URL = 'https://docs.google.com/spreadsheets/d/1HmS4MA8qLoKzpsdB1zcOTFGLsnlnEQn1ZIOPlQgyF84/edit?usp=sharing';
+            const PORTAL2_URL = 'https://docs.google.com/spreadsheets/d/15vgFT3yDl-BQ3qVswyjgj8mi1bkjNDoUAKWYMZyoxF8/edit?resourcekey=&gid=1952106637#gid=1952106637';
+            
+            // Función para abrir un portal en pantalla completa
+            function openPortal(url, title) {
+                portalFrame.src = url;
+                portalTitle.textContent = title;
+                fullscreenContainer.style.display = 'flex';
+                
+                // Solicitar pantalla completa si el navegador lo permite
+                if (fullscreenContainer.requestFullscreen) {
+                    fullscreenContainer.requestFullscreen();
+                } else if (fullscreenContainer.mozRequestFullScreen) {
+                    fullscreenContainer.mozRequestFullScreen();
+                } else if (fullscreenContainer.webkitRequestFullscreen) {
+                    fullscreenContainer.webkitRequestFullscreen();
+                } else if (fullscreenContainer.msRequestFullscreen) {
+                    fullscreenContainer.msRequestFullscreen();
+                }
+            }
+            
+            // Eventos para los botones
+            portal1Btn.addEventListener('click', function() {
+                openPortal(PORTAL1_URL, 'Cupo 1');
+            });
+            
+            portal2Btn.addEventListener('click', function() {
+                openPortal(PORTAL2_URL, 'Cupo 2');
+            });
+            
+            // Evento para cerrar el portal
+            closeBtn.addEventListener('click', function() {
+                closePortal();
+            });
+            
+            // Cerrar con tecla ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closePortal();
+                }
+            });
+            
+            function closePortal() {
+                // Salir del modo pantalla completa
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                
+                fullscreenContainer.style.display = 'none';
+                portalFrame.src = '';
+            }
+            
+            // Detectar cuando se sale del modo pantalla completa
+            document.addEventListener('fullscreenchange', exitHandler);
+            document.addEventListener('webkitfullscreenchange', exitHandler);
+            document.addEventListener('mozfullscreenchange', exitHandler);
+            document.addEventListener('MSFullscreenChange', exitHandler);
+            
+            function exitHandler() {
+                if (!document.fullscreenElement && 
+                    !document.webkitFullscreenElement && 
+                    !document.mozFullScreenElement &&
+                    !document.msFullscreenElement) {
+                    fullscreenContainer.style.display = 'none';
+                    portalFrame.src = '';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
